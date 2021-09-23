@@ -78,7 +78,7 @@ func main() {
 package main
 
 import (
-	"github.com/iris-gonic/iris"
+	"github.com/kataras/iris/v12"
 	swaggerFiles "github.com/swaggo/files"
 	irisSwagger "github.com/swaggo/iris-swagger"
 
