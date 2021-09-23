@@ -23,9 +23,12 @@ $ go get -u github.com/swaggo/files
 And import following in your code:
 
 ```go
-import "github.com/swaggo/iris-swagger" // iris-swagger middleware
-import "github.com/swaggo/files" // swagger embed files
+import(
+	swaggerFiles "github.com/swaggo/files"
+	irisSwagger "github.com/daqian/iris-swagger"
+)
 
+app.Get("/swagger/{swaggerPath:path}", irisSwagger.WrapHandler(swaggerFiles.Handler))
 ```
 
 ### Canonical example:
@@ -34,7 +37,7 @@ import "github.com/swaggo/files" // swagger embed files
 package main
 
 import (
-	"github.com/iris-gonic/iris"
+	"github.com/kataras/iris/v12"
 	swaggerFiles "github.com/swaggo/files"
 	irisSwagger "github.com/daqian/iris-swagger"
 
