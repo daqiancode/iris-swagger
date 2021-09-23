@@ -66,7 +66,7 @@ func CustomWrapHandler(config *Config, h *webdav.Handler) iris.Handler {
 		var matches []string
 		if matches = rexp.FindStringSubmatch(c.Path()); len(matches) != 3 {
 			c.StatusCode(iris.StatusNotFound)
-			c.Write([]byte("404 page not found"))
+			c.WriteString("404 page not found")
 			return
 		}
 		path := matches[2]
@@ -95,6 +95,7 @@ func CustomWrapHandler(config *Config, h *webdav.Handler) iris.Handler {
 		case "doc.json":
 			doc, err := swag.ReadDoc()
 			if err != nil {
+				c.WriteString(err.Error())
 				c.StopWithStatus(iris.StatusInternalServerError)
 
 				return
