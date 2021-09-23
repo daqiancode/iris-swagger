@@ -2,7 +2,6 @@ package irisSwagger
 
 import (
 	"html/template"
-	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -89,21 +88,21 @@ func CustomWrapHandler(config *Config, h *webdav.Handler) iris.Handler {
 
 		switch path {
 		case "index.html":
-			index.Execute(c.Writer, &swaggerUIBundle{
+			index.Execute(c.ResponseWriter(), &swaggerUIBundle{
 				URL:         config.URL,
 				DeepLinking: config.DeepLinking,
 			})
 		case "doc.json":
 			doc, err := swag.ReadDoc()
 			if err != nil {
-				c.AbortWithStatus(http.StatusInternalServerError)
+				c.StopWithStatus(iris.StatusInternalServerError)
 
 				return
 			}
-			c.Writer.Write([]byte(doc))
+			c.Write([]byte(doc))
 		default:
 			locker.RLock()
-			h.ServeHTTP(c.Writer, c.Request)
+			h.ServeHTTP(c.ResponseWriter(), c.Request())
 			locker.RUnlock()
 		}
 	}
@@ -117,7 +116,7 @@ func DisablingWrapHandler(h *webdav.Handler, envName string) iris.Handler {
 		return func(c iris.Context) {
 			// Simulate behavior when route unspecified and
 			// return 404 HTTP code
-			c.String(404, "")
+			c.StopWithStatus(iris.StatusNotFound)
 		}
 	}
 
@@ -132,7 +131,7 @@ func DisablingCustomWrapHandler(config *Config, h *webdav.Handler, envName strin
 		return func(c iris.Context) {
 			// Simulate behavior when route unspecified and
 			// return 404 HTTP code
-			c.String(404, "")
+			c.StopWithStatus(iris.StatusNotFound)
 		}
 	}
 
